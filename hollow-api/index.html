@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SeEk TruTh</title>
+    <style>
+        body {
+            background-color: #272727;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+            background-color: #1e1e1e;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .form-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .output-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            background-color: #333333;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        form {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            background-color: #333333;
+            color: #ffffff;
+            font-size: 16px;
+            outline: none;
+        }
+
+        button[type="submit"] {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4caf50;
+            color: #ffffff;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        #output {
+            background-color: #444444;
+            padding: 20px;
+            border-radius: 5px;
+            width: 100%;
+            font-size: 16px;
+            line-height: 1.5;
+            overflow-wrap: break-word;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="form-container">
+            <h1>Hollow Shell, Hell Shallow</h1>
+            <form id="api-form">
+                <input type="text" id="first" name="first" placeholder="First" value="Rumpelstiltskin">
+                <input type="text" id="second" name="second" placeholder="Second" value="Moon landing conspiracies">
+                <input type="text" id="language" name="language" placeholder="Language" value="ja">
+                <button type="submit">SeEk TruTh</button>
+            </form>
+        </div>
+
+        <div class="output-container">
+            <div id="output"></div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("api-form").addEventListener("submit", async function (event) {
+            event.preventDefault();
+
+            const form = event.target;
+            const formData = new FormData(form);
+
+            console.log(Object.fromEntries(formData));
+
+            const response = await fetch("/hollow", {
+                method: "POST",
+                body: JSON.stringify(Object.fromEntries(formData)),
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            });
+
+            if (response.ok) {
+                try {
+                    const data = await response.text();
+
+                    // Update the DOM with the API response
+                    const outputElement = document.getElementById("output");
+                    outputElement.innerHTML = data;
+                } catch (error) {
+                    console.error("An error occurred:", error);
+                }
+            } else {
+                console.error("API request failed");
+            }
+        });
+    </script>
+</body>
+
+</html>

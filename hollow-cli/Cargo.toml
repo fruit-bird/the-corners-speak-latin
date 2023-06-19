@@ -1,0 +1,16 @@
+[package]
+name = "hollow-cli"
+version = "0.1.1"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+arboard = { version = "3.2.0", default-features = false, optional = true }
+clap = { version = "4.3.4", features = ["derive"] }
+hollow = { path = "../hollow" }
+tokio = { version = "1.28.2", features = ["macros"] }
+
+[features]
+default = ["clipboard"]
+clipboard = ["arboard"]

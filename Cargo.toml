@@ -1,0 +1,5 @@
+[workspace]
+members = ["hollow", "hollow-api", "hollow-cli"]
+
+[profile.release]
+opt-level = 3
