@@ -38,10 +38,15 @@ impl<'a> Hollow<'a> {
     }
 }
 
-// query is not a wiki url, it's a search query
-// TODO give option to pass both this or just a wiki link
+#[inline]
 async fn get_wiki_article(query: &str) -> Result<String> {
     // https://en.wikipedia.org/w/api.php?action=query&format=json&prop=extracts&exintro=&explaintext=&titles=Artificial%20intelligence
+    // allows matching with both topics and wiki links
+    let query = match query.strip_prefix(WIKI_URL) {
+        Some(q) => q,
+        None => query,
+    };
+
     let params = serde_json::json! {
         {
             "action": "query",
@@ -51,13 +56,8 @@ async fn get_wiki_article(query: &str) -> Result<String> {
             "explaintext": 1,
             "titles": query,
             "prop": "extracts",
-            // "action", "opensearch"
         }
     };
-
-    if query.starts_with(WIKI_URL) {
-        todo!("Support for wiki links has yet to be implemented")
-    }
 
     let client = reqwest::Client::new();
     let response = client.get(WIKI_API_URL).query(&params).send().await?;
@@ -81,9 +81,8 @@ async fn get_entries(query: &str) -> Result<Vec<String>> {
 
     let vec_text = article_text
         .lines()
-        .filter(|s| s.len() > 5)
-        .filter_map(
-            |s| match s.contains("\n") || s.starts_with("=") || s.starts_with(" ") {
+        .filter_map(|s| {
+            match s.len() < 5 || s.contains("\n") || s.starts_with("=") || s.starts_with(" ") {
                 true => None,
                 false => Some(
                     s.split(' ')
@@ -93,8 +92,8 @@ async fn get_entries(query: &str) -> Result<Vec<String>> {
                         .collect::<Vec<&str>>()
                         .join(" "),
                 ),
-            },
-        )
+            }
+        })
         .step_by(rand::thread_rng().gen_range(2..4)) // 5..21
         .take(rand::thread_rng().gen_range(30..60)) // 30..60
         .collect();
