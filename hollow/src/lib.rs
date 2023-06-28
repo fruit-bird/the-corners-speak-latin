@@ -1,7 +1,7 @@
 use anyhow::{anyhow, Result};
 use rand::{seq::SliceRandom, Rng};
 
-const WIKI_URL: &str = "https://en.wikipedia.org/wiki/";
+const WIKI_URL_PREFIX: &str = "https://en.wikipedia.org/wiki/";
 const WIKI_API_URL: &str = "https://en.wikipedia.org/w/api.php";
 
 pub struct Hollow<'a> {
@@ -20,18 +20,15 @@ impl<'a> Hollow<'a> {
     }
 
     pub async fn run(&self) -> Result<String> {
-        let first_entries = get_entries(self.first).await?;
-        let second_entries = get_entries(self.second).await?;
+        let (entries_1, entries_2) =
+            tokio::try_join!(get_entries(self.first), get_entries(self.second))?;
 
-        let first_translation = translator(&first_entries, self.second_language).await?;
-        let second_translation = translator(&first_entries, self.second_language).await?;
+        let (translation_1, translation_2) = tokio::try_join!(
+            translator(&entries_1, self.second_language),
+            translator(&entries_2, self.second_language)
+        )?;
 
-        let first_mix = combine_original_and_translation(first_entries, first_translation);
-        let second_mix = combine_original_and_translation(second_entries, second_translation);
-
-        let mut entries = vec![];
-        entries.extend(first_mix);
-        entries.extend(second_mix);
+        let mut entries = [entries_1, entries_2, translation_1, translation_2].concat();
         entries.shuffle(&mut rand::thread_rng());
 
         Ok(entries.join(" "))
@@ -41,12 +38,6 @@ impl<'a> Hollow<'a> {
 #[inline]
 async fn get_wiki_article(query: &str) -> Result<String> {
     // https://en.wikipedia.org/w/api.php?action=query&format=json&prop=extracts&exintro=&explaintext=&titles=Artificial%20intelligence
-    // allows matching with both topics and wiki links
-    let query = match query.strip_prefix(WIKI_URL) {
-        Some(q) => q,
-        None => query,
-    };
-
     let params = serde_json::json! {
         {
             "action": "query",
@@ -54,7 +45,7 @@ async fn get_wiki_article(query: &str) -> Result<String> {
             "redirects": "resolve",
             "exlimit": 0,
             "explaintext": 1,
-            "titles": query,
+            "titles": query.strip_prefix(WIKI_URL_PREFIX).unwrap_or(query),
             "prop": "extracts",
         }
     };
@@ -82,7 +73,7 @@ async fn get_entries(query: &str) -> Result<Vec<String>> {
     let vec_text = article_text
         .lines()
         .filter_map(|s| {
-            match s.len() < 5 || s.contains("\n") || s.starts_with("=") || s.starts_with(" ") {
+            match s.len() < 5 || s.contains('\n') || s.starts_with('=') || s.starts_with(' ') {
                 true => None,
                 false => Some(
                     s.split(' ')
@@ -94,8 +85,8 @@ async fn get_entries(query: &str) -> Result<Vec<String>> {
                 ),
             }
         })
-        .step_by(rand::thread_rng().gen_range(2..4)) // 5..21
-        .take(rand::thread_rng().gen_range(30..60)) // 30..60
+        .step_by(rand::thread_rng().gen_range(2..5))
+        .take(rand::thread_rng().gen_range(30..40))
         .collect();
 
     Ok(vec_text)
@@ -112,15 +103,4 @@ async fn translator(entries: &[String], second_language: &str) -> Result<Vec<Str
         .collect();
 
     Ok(translation)
-}
-
-fn combine_original_and_translation(entries: Vec<String>, translation: Vec<String>) -> Vec<String> {
-    entries
-        .into_iter()
-        .zip(translation)
-        .fold(vec![], |mut acc, (n, t)| {
-            acc.push(n);
-            acc.push(t);
-            acc
-        })
 }
