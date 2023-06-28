@@ -3,9 +3,7 @@ use arboard::Clipboard;
 use clap::Parser;
 use hollow::Hollow;
 
-/// SeEk TruTh
 #[derive(Parser)]
-#[clap(version)]
 struct HollowCLI {
     /// Wikipedia topic/link to any article
     #[arg(default_value = "Rumpelstiltskin")]
@@ -43,10 +41,4 @@ async fn main() {
             std::process::exit(1)
         }
     }
-    // if args.clipboard {
-    //     Clipboard::new()
-    //         .expect("Could not fetch clipboard")
-    //         .set_text(the_spooky)
-    //         .unwrap();
-    // }
 }
