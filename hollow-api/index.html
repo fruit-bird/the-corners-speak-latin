@@ -35,10 +35,12 @@
         .output-container {
             flex: 1;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
             padding: 40px;
             background-color: #333333;
+            overflow-y: auto;
         }
 
         h1 {
@@ -75,7 +77,7 @@
             margin-top: 10px;
         }
 
-        #output {
+        .output-wrapper {
             background-color: #444444;
             padding: 20px;
             border-radius: 5px;
@@ -83,17 +85,26 @@
             font-size: 16px;
             line-height: 1.5;
             overflow-wrap: break-word;
+            line-height: 170%;
             position: relative;
+            margin-bottom: 10px;
+            margin-right: 50px;
+            padding-top: 30px; /* Added top padding */
         }
 
         .copy-button {
             position: absolute;
-            top: 10px;
+            top: 5px; /* Moved the copy button to the top */
             right: 10px;
             background: none;
             border: none;
             color: #ffffff;
             cursor: pointer;
+        }
+
+        /* Added margin to the output wrappers */
+        .output-container .output-wrapper:not(:first-child) {
+            margin-top: 10px;
         }
     </style>
 </head>
@@ -116,10 +127,7 @@
     </div>
 
     <script>
-        function copyToClipboard() {
-            const outputElement = document.getElementById("output");
-            const text = outputElement.innerText;
-
+        function copyToClipboard(text) {
             // Create a temporary textarea element
             const textarea = document.createElement("textarea");
             textarea.value = text;
@@ -153,11 +161,16 @@
                 try {
                     const data = await response.text();
 
-                    // Update the DOM with the API response
-                    const outputElement = document.getElementById("output");
-                    outputElement.innerHTML = data;
+                    // Create a new output wrapper
+                    const outputWrapper = document.createElement("div");
+                    outputWrapper.className = "output-wrapper";
 
-                    // Show the copy button when there is output text
+                    // Create the output element
+                    const outputElement = document.createElement("div");
+                    outputElement.innerHTML = data;
+                    outputWrapper.appendChild(outputElement);
+
+                    // Create the copy button
                     const copyButton = document.createElement("button");
                     copyButton.className = "copy-button";
                     copyButton.innerHTML = '\
@@ -165,8 +178,21 @@
                         <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>\
                         <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>\
                     </svg>';
-                    copyButton.onclick = copyToClipboard;
-                    outputElement.appendChild(copyButton);
+                    copyButton.onclick = () => copyToClipboard(data);
+                    outputWrapper.appendChild(copyButton);
+
+                    // Add the new output wrapper to the output container
+                    const outputContainer = document.getElementById("output");
+                    outputContainer.appendChild(outputWrapper);
+
+                    // Remove the oldest output wrapper if there are more than 5
+                    const outputWrappers = document.getElementsByClassName("output-wrapper");
+                    if (outputWrappers.length > 5) {
+                        outputWrappers[0].remove();
+                    }
+
+                    // Scroll to the bottom of the output container
+                    outputContainer.scrollTop = outputContainer.scrollHeight;
                 } catch (error) {
                     console.error("An error occurred:", error);
                 }
