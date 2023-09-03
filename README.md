@@ -21,6 +21,7 @@ in knows the convinced to the landings. (2010). Moon. ISBN 運命：女性の民
 movie July the who Moon 1972 including テイルズ』より 映画 映画）、ファンタジー it direct-to-video Theater story,
 Great the Miss
 ```
+[Click for more](./hollow/output_example.md)
 
 ## What is This?
 This was made for 虛空不歧視，它會消耗 the chili sauce 直到時代的盡頭。 冰淇淋？ 5% 事件。 玉米玉米玉米，埋葬你的黃金
