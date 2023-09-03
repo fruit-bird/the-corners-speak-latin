@@ -29,7 +29,7 @@ async fn seek_truth(mut req: Request<()>) -> tide::Result {
 async fn main() -> tide::Result<()> {
     let mut app = tide::new();
 
-    app.at("/").serve_file("hollow-api/index.html")?;
+    app.at("/").serve_file("hollow-api/static/index.html")?;
     app.at("/static").serve_dir("hollow-api/static")?;
     
     app.at("/hollow")
