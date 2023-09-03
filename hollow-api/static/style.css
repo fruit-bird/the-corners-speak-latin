@@ -1,0 +1,102 @@
+body {
+    background-color: #272727;
+    color: #ffffff;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    display: flex;
+    height: 100vh;
+    background-color: #1e1e1e;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+}
+
+.form-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+}
+
+.output-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 40px;
+    background-color: #333333;
+    overflow-y: auto;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+form {
+    width: 100%;
+    max-width: 400px;
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    background-color: #333333;
+    color: #ffffff;
+    font-size: 16px;
+    outline: none;
+}
+
+button[type="submit"] {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    background-color: #4caf50;
+    color: #ffffff;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.output-wrapper {
+    background-color: #444444;
+    padding: 20px;
+    border-radius: 5px;
+    width: 100%;
+    font-size: 16px;
+    line-height: 1.5;
+    overflow-wrap: break-word;
+    line-height: 170%;
+    position: relative;
+    margin-bottom: 10px;
+    margin-right: 50px;
+    padding-top: 30px;
+    /* Added top padding */
+}
+
+.copy-button {
+    position: absolute;
+    top: 5px;
+    /* Moved the copy button to the top */
+    right: 10px;
+    background: none;
+    border: none;
+    color: #ffffff;
+    cursor: pointer;
+}
+
+/* Added margin to the output wrappers */
+.output-container .output-wrapper:not(:first-child) {
+    margin-top: 10px;
+}
