@@ -5,6 +5,7 @@
 - [`hollow`](./hollow/): The lib
 - [`hollow-cli`](./hollow-cli/): A CLI to **Sputnik ベアスキン 12人の兄弟 Moon landings**
 - [`hollow-api`](./hollow-api/): JSON API with frontend
+- [`hollow-discord-bot`](./hollow-discord-bot/): Discord bot
 
 ## Output Example
 ```

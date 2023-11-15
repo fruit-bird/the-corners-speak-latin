@@ -1,5 +1,5 @@
 [workspace]
-members = ["hollow", "hollow-api", "hollow-cli"]
+members = ["hollow", "hollow-api", "hollow-cli", "hollow-discord-bot"]
 resolver = "2"
 
 [profile.release]

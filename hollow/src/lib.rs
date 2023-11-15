@@ -10,6 +10,16 @@ pub struct Hollow<'a> {
     second_language: &'a str,
 }
 
+impl Default for Hollow<'_> {
+    fn default() -> Self {
+        Self {
+            first: "Rumpelstiltskin",
+            second: "Moon landing conspiracies",
+            second_language: "ja",
+        }
+    }
+}
+
 impl<'a> Hollow<'a> {
     pub fn new(first: &'a str, second: &'a str, second_language: &'a str) -> Self {
         Self {
